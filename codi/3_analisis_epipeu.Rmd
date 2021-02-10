@@ -238,7 +238,7 @@ descrTable(formula_taula00_1,
                 max.xlev = 100, 
                 show.p.overall=FALSE,
                 show.n = T,
-                hide.no="No",simplify=F)%>% export2md(header.background = "grey", header.color = "white", size=12,caption = "Taula 00.Variables TOTALES / UEIPA  -ulcera+pie+amputacio- (Primaria+Hospital).Un año  hacia atras.Descriptiva general:[Frecuencia,Mediana,Min,Max]")
+                hide.no="No",simplify=F)%>% export2md(header.background = "grey", header.color = "white", size=12,caption = "Taula 00.Variables TOTALES / UEIPA  -ulcera+pie+amputacion- (Primaria+Hospital).Un año  hacia atras.Descriptiva general:[Frecuencia,Mediana,Min,Max]")
 
 
 ```
