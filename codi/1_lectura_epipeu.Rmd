@@ -73,7 +73,6 @@ dt_diagnostics_HOSP<-dt_diagnostics_HOSP%>%
   select(idp,cod,dat,agr)%>%
   bind_rows(select(dt_diagnostics_HOSP2,idp,cod,dat,agr))
 
-
 dt_diagnostics_AP<-readRDS(here::here(directori_dades_origen,"epiPEUCAT_entregable_diagnostics_20200206_104913.rds")) %>% as_tibble()
 dt_derivacions<-readRDS(here::here(directori_dades_origen,"epiPEUCAT_entregable_derivacions_20200206_104913.rds")) %>% as_tibble()
 dt_facturacio<-readRDS(here::here(directori_dades_origen,"epiPEUCAT_entregable_farmacs_facturats_20200206_104913.rds")) %>% as_tibble()

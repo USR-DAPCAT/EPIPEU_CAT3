@@ -61,9 +61,6 @@ source(here::here("codi/criteris_exclusio_diagrama2.r"))
 link_source<-paste0("https://github.com/jrealgatius/Stat_codis/blob/master/funcions_propies.R","?raw=T")
 devtools::source_url(link_source)
 
-  
-
-
 
 conductor<-here::here("conductor_Epipeu.xlsx")
 
