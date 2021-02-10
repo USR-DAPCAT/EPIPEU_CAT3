@@ -1,0 +1,262 @@
+---
+title: "epiPEUCAT: Estudio transversal para analizar la epidemiologia del pie diabetico en los pacientes con diabetes mellitus tipo 2 con la base de datos SIDIAP"
+author: "Jordi Real & Rai Puig"
+website: "https://github.com/USR-DAPCAT/"
+
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+
+
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    fig_caption: true
+    css: logos_css/usr_styles.css
+  pdf_document: default
+  word_document: default
+
+params:
+  dir_dades_global: "../../DADES/EPIPEU_CAT3/dades/mostra"
+  dir_dades: "dades/mostra"
+  
+---
+
+&nbsp;
+<script>
+   $(document).ready(function() {
+     $head = $('#header');
+     $head.prepend('<img src=\"https://www.idiapjgol.org/images/logo.png\" style=\"float: right ;width: 130px;\"/>')
+     $head.prepend('<img src=\"https://avatars2.githubusercontent.com/u/57066591?s=200&v=4\" style=\"margin-left:25% ;width: 80px;\"/>')
+     $head.prepend('<img src=\"logos_css/logoDAP_Cat.png\" style=\"float: left:1;width: 185px;\"/>')
+   });
+</script>
+
+
+<div class="watermark">DRAFT</div>
+
+****
+
+## 0. Estado:
+
+**Ultimas actualizaciones   Enero/ 2021** 
+
+&check; Agrupadores para amputaciones y revascularizaciones  <br/>
+&check; Solo 2 grupos con ulcera/pie diabetico ( primaria+hospitales) VS .sin ulcera/pie diabetico (primaria+hospitales) <br/>
+&check; Nuevas agregaciones de diagnosticos y farmacos <br/>
+&check; Programacion de nuevas recodificaciones <br/>
+&check; Tabla Descriptiva Exploratoria General, por varlidación  <br/>
+&check; Descriptiva TABLA 3 : Variables sociodemograficas,por varlidación  <br/>
+&check; Descriptiva TABLA 4 : Comorbilidades Generales,por varlidacion  <br/>
+&check; Descriptiva TABLA 5 : Comorbilidades relacionadas con pie diabetico/UEIP,por varlidación  <br/>
+&check; Descriptiva TABLA 6 : Exploracion fisica,por varlidacion  <br/>
+&check; Descriptiva TABLA 7 : Medicacion general,antidiabeticos orales y antidiabeticos inyectables,por varlidacion  <br/>
+&check; Descriptiva TABLA 8 : Parametros de laboratorio,por varlidacion  <br/>
+&check; Descriptiva TABLA 9 : Derivaciones,por varlidacion  <br/>
+
+**Realizado**
+
+&check; Lectura / importacion de archivos  <br/>
+&check; Generacion de conductors   <br/>
+&check; Revision de codigos  <br/>
+&check; Agregacion de datos segun protocolo <br/>
+&check; Calculo de varibles y recodificaciones <br/>
+&check; Descriptiva exploratoria <br/>
+&check; Nuevas agregaciones de diagnosticos y fármacos <br/>
+&check; Programación de nuevas recodificaciones <br/>
+&check; Tabla Descriptiva Exploratoria General, por varlidacion  <br/>
+&check; Descriptiva TABLA 3 : Variables sociodemograficas,por varlidacion  <br/>
+&check; Descriptiva TABLA 4 : Comorbilidades Generales,por varlidacion  <br/>
+&check; Descriptiva TABLA 5 : Comorbilidades relacionadas con pie diabetico/UEIP,por varlidacion  <br/>
+&check; Descriptiva TABLA 6 : Exploracion fisica,por varlidacion  <br/>
+&check; Descriptiva TABLA 7 : Medicacion general,antidiabeticos orales y antidiabeticos inyectables,por varlidación  <br/>
+&check; Descriptiva TABLA 8 : Parametros de laboratorio,por varlidacion  <br/>
+&check; Descriptiva TABLA 9 : Derivaciones,por varlidacion  <br/>
+
+**Pendent**
+
+&check; Revision y depuracion de errores   <br/>
+&check; Duda codigos CAP/HOSP  en Pie Diabético    <br/>
+&check; Duda codigos CAP/HOSP     <br/>
+&check; No correspondencia entre catalago y protocolo      <br/>
+
+# Fase de validacion de base
+
+## Fase Preparacion
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, include=F,size="huge")
+############
+#02.11.2020#
+############
+
+# EStudiar els missings (.na) i quan juguem amb Problemes i valors analatics o valors clinics! 
+# Dema 2.11.2020 , dia dels morts!
+
+gc()
+# libreries i funcions
+library("dplyr")
+library("lubridate")
+library("compareGroups")
+#
+source(here::here("codi/Flowchart_Box_Final2.r"))
+source(here::here("codi/criteris_exclusio_diagrama2.r"))
+#
+# Descarregar funcions github -
+link_source<-paste0("https://github.com/jrealgatius/Stat_codis/blob/master/funcions_propies.R","?raw=T")
+devtools::source_url(link_source)
+#######################################################
+conductor_codis<-here::here("codis_peucat.xlsx")
+conductor<-here::here("conductor_Epipeu.xlsx")
+#######################################################
+# Llegir plana
+dt_plana<-readRDS(here::here(params$dir_dades,"dt_plana.rds")) %>% as_tibble()
+# Filtrem  i ELIMINEM els Difunts anteriors al 2019!
+
+```
+The codes considered for the classification of diabetes TYPE 2
+
+```{r codis_diabetes, include=T}
+
+readxl::read_excel(conductor_codis,col_types = "text")%>%select(cod,DM2,Descripcio)%>% filter(DM2=="DM2")%>%select(cod,Descripcio)%>% knitr::kable(caption="ICD10 Diabetes type 2")
+
+```
+
+## Descriptiva Exploratoria General 1
+```{r resultats1, include=T}
+
+#13.11.2020
+
+
+flow_chart1<-criteris_exclusio_diagrama(dt=dt_plana,
+                                        taulavariables=conductor,
+                                        criteris = "exc_pre",
+                                        ordre="exc_ordre",
+                                        grups=NA,
+                                        etiquetes="descripcio",
+                                        sequencial = T,
+                                        pob_lab=c("epiPEUCAT DM2  ","epiPEUCAT DM2 sin exclusiones"),
+                                        colors=c("white","grey"),
+                                        forma=c("ellipse","box"))
+
+flow_chart1
+
+
+flow_chart2<-criteris_exclusio_diagrama2(dt=dt_plana,
+                                         taulavariables=conductor,
+                                         criteris = "exc_pre",
+                                         ordre="exc_ordre",
+                                         grups=NA,
+                                         etiquetes="descripcio",
+                                         sequencial = T,
+                                         pob_lab=c("Muestra epiPEUCAT DM2 ","Muestra epiPEUCAT DM2 sin exclusiones"),
+                                         colors=c("white","grey"),
+                                         POB=459331 ,
+                                         POB_LAB="SIDIAP:La población de pacientes con DM2 de 2017 aprox: ")
+
+
+flow_chart2
+
+
+#Apliquem les EXCLUSIONS!
+dt_plana_exc<-criteris_exclusio(dt_plana,taulavariables=conductor,criteris="exc_pre")
+
+
+#Apliquem que surtin els MISSINGS a les TAULES , a partir del CONDUCTOR!
+dt_plana_exc<-dt_plana_exc%>%mutate_at(extreure.variables("missings",conductor,dt=dt_plana_exc),as.factor)
+
+#Etquetem  NOMS! de les  VAR  a partir del Conductor!
+dt_plana_exc<-etiquetar(dt_plana_exc,taulavariables=conductor)
+
+```
+
+## Descriptiva Exploratoria General 2
+```{r resultats2, include=T}
+variables_noconductuals<-extreure.variables("Taula00",taulavariables=conductor)[!extreure.variables("Taula00",taulavariables = conductor)%in%names(dt_plana_exc)]
+
+formula_taula00<-formula.text("Taula00",y="",taulavariables = conductor,elimina = variables_noconductuals)
+
+descrTable(formula_taula00,
+           method =2,
+           Q1 = 0, 
+           Q3 = 1,
+           data=dt_plana_exc,
+           include.miss = TRUE,
+           max.xlev = 200, 
+           show.p.overall=FALSE,
+           show.n = T,
+          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption = "Descriptiva GENERAL 1 :[Frecuencia,Mediana,M�?n,Max]")
+
+
+
+
+
+  
+descrTable(~ GRUP.UEIP+
+             GRUP365.UEIP+
+             GRUP365.UEIPA+
+             GRUP365.PIE_Diabetico_ulcera_g_art_ch_ost+
+             GRUP2,
+           method =2,
+           Q1 = 0, Q3 = 1,
+           data=dt_plana_exc,
+           include.miss = TRUE,
+           max.xlev = 100, 
+           show.p.overall=FALSE,
+           show.n = T,
+          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption="Descriptiva GENERAL 2:[Frecuencia,Mediana,M�?n,Max]")
+```
+
+
+
+```{r resultats3, include=T}
+formula_taula00_0<-formula.text("Taula00",y=c("GRUP365.UEIP"),taulavariables = conductor,dt=dt_plana_exc)
+formula_taula00_1<-formula.text("Taula00",y=c("GRUP365.UEIPA"),taulavariables = conductor,dt=dt_plana_exc)
+
+
+
+#0) TAULA.Ulcera/Pie Diabético(Primaria+Hospital)
+
+descrTable(formula_taula00_0,
+                method =2,
+                Q1 = 0, Q3 = 1,
+                data=dt_plana_exc,
+                include.miss = TRUE,
+                max.xlev = 100, 
+                show.p.overall=FALSE,
+                show.n = T,
+                hide.no="No",simplify=F)%>% export2md(header.background = "grey", header.color = "white", size=12,caption = "Taula 00.Variables TOTALES / UEIP(Primaria+Hospital).Un a�o  hacia atras.Descriptiva general:[Frecuencia,Mediana,Min,Max]")
+
+
+#1) TAULA.Ulcera/Pie Diabético/Amputaciones(Primaria+Hospital)
+
+descrTable(formula_taula00_1,
+                method =2,
+                Q1 = 0, Q3 = 1,
+                data=dt_plana_exc,
+                include.miss = TRUE,
+                max.xlev = 100, 
+                show.p.overall=FALSE,
+                show.n = T,
+                hide.no="No",simplify=F)%>% export2md(header.background = "grey", header.color = "white", size=12,caption = "Taula 00.Variables TOTALES / UEIPA  -ulcera+pie+amputacio- (Primaria+Hospital).Un a�o  hacia atras.Descriptiva general:[Frecuencia,Mediana,Min,Max]")
+
+
+```
+
+## 4. Salvar taula plana
+
+```{r salvar}
+saveRDS(dt_plana_exc, file=here::here(params$dir_dades,"dt_plana_exc.rds"))
+```
+
+
+```
+
+&nbsp;
+<hr />
+<p style="text-align: center;">A work by $Jordi Real$ $Rai Puig$ </a></p>
+<p style="text-align: center;">$Llepali System$ </a></p>
+<p style="text-align: center;"><span style="color: #808080;"><em><https://github.com/USR-DAPCAT/></em></span></p>
+
+
+

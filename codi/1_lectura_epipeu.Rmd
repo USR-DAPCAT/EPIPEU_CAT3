@@ -1,0 +1,359 @@
+---
+title: "epiPEUCAT: Estudio transversal para analizar la epidemiologia del pie diabetico en los pacientes con diabetes mellitus tipo 2 con la base de datos SIDIAP"
+author: "Jordi Real & Rai Puig"
+website: "https://github.com/USR-DAPCAT/"
+
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+
+
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    fig_caption: true
+    css: logos_css/usr_styles.css
+  pdf_document: default
+  word_document: default
+
+params:
+  dir_dades_origen: "../../DADES/EPIPEU_CAT3/dades/mostra"
+  dir_dades: "dades/mostra"
+  
+
+  
+---
+
+&nbsp;
+<script>
+   $(document).ready(function() {
+     $head = $('#header');
+     $head.prepend('<img src=\"https://www.idiapjgol.org/images/logo.png\" style=\"float: right ;width: 130px;\"/>')
+     $head.prepend('<img src=\"https://avatars2.githubusercontent.com/u/57066591?s=200&v=4\" style=\"margin-left:25% ;width: 80px;\"/>')
+     $head.prepend('<img src=\"logoDAP_Cat.png\" style=\"float: left:1;width: 185px;\"/>')
+   });
+</script>
+
+
+
+<div class="watermark">DRAFT</div>
+
+
+****
+
+
+# FASE LECTURA
+
+>> Generacio de taula plana i aplicacio de primers criteris inclusio 
+
+```{r setup, include = FALSE}
+#rm(list=ls())
+library(dplyr)
+# Funcions 
+link_source<-paste0("https://github.com/jrealgatius/Stat_codis/blob/master/funcions_propies.R","?raw=T")
+devtools::source_url(link_source)
+conductor_codis<-here::here("codis_peucat.xlsx")
+directori_dades_origen<-params$dir_dades_origen
+directori_dades<-params$dir_dades
+#   template: template.html
+```
+
+
+## 1. Lectura 
+
+```{r lectura, include=T}
+# 1 Lectura -----------
+#12.Xii.2020
+dt_diagnostics_HOSP<-readRDS(here::here(directori_dades_origen,"epiPEUCAT_entregable_cmbdh_diagnostics_20200206_104913.rds")) %>% as_tibble()
+
+#26.xii.2020[2Entrega]
+dt_diagnostics_HOSP2<-data.table::fread(here::here(directori_dades_origen,"epiPEUCAT_PX_entregable_cmbdh_diagnostics_20210104_131331.txt"))%>%as_tibble()%>%select(-cingres)%>%select(idp,cod,dat,dx_pos,dalta,calta,id_ingres,origen,codificacio,agr)
+
+dt_diagnostics_HOSP<-dt_diagnostics_HOSP%>%
+  select(idp,cod,dat,agr)%>%
+  bind_rows(select(dt_diagnostics_HOSP2,idp,cod,dat,agr))
+
+
+dt_diagnostics_AP<-readRDS(here::here(directori_dades_origen,"epiPEUCAT_entregable_diagnostics_20200206_104913.rds")) %>% as_tibble()
+dt_derivacions<-readRDS(here::here(directori_dades_origen,"epiPEUCAT_entregable_derivacions_20200206_104913.rds")) %>% as_tibble()
+dt_facturacio<-readRDS(here::here(directori_dades_origen,"epiPEUCAT_entregable_farmacs_facturats_20200206_104913.rds")) %>% as_tibble()
+
+dt_poblacio<-readRDS(here::here(directori_dades_origen,"epiPEUCAT_entregable_poblacio_20200206_104913.rds")) %>% as_tibble()
+
+dt_tabaquisme<-readRDS(here::here(directori_dades_origen,"epiPEUCAT_entregable_tabaquisme_20200206_104913.rds")) %>% as_tibble()
+dt_analitiques<-readRDS(here::here(directori_dades_origen,"epiPEUCAT_entregable_variables_analitiques_20200206_104913.rds")) %>% as_tibble()
+dt_cliniques<-readRDS(here::here(directori_dades_origen,"epiPEUCAT_entregable_variables_cliniques_20200206_104913.rds")) %>% as_tibble()
+
+#[1Entrega]
+dt_procediments<-read.csv2(here::here(directori_dades_origen,"epiPEUCAT_PX_entregable_cmbdh_procediments_20201211_095238.csv"),sep="|",dec=",",header = TRUE,stringsAsFactors=F)%>%
+  as_tibble()%>%select(idp,cod,dat,agr)
+
+#26.xii.2020[3Entrega]
+dt_procediments2<-data.table::fread(here::here(directori_dades_origen,"epiPEUCAT_PX_entregable_cmbdh_procediments_20210104_131331.txt"))%>%
+  as_tibble()%>%select(idp,cod,dat,agr)
+
+
+
+# fer-ho dema 26.01.2021
+#
+#
+#i)   epiPEUCAT_PX_entregable_cmbdh_diagnostics_20210104_131331
+#ii)  epiPEUCAT_PX_entregable_cmbdh_procediments_20201211_095238
+#iii) epiPEUCAT_PX_entregable_cmbdh_procediments_20210104_131331
+
+# ho he fet 18.12.2020
+# Fusiono dt_diagnostics (E-CAP + Hospital1+Hospital2+Procediments )
+dt_diagnostics_AP_HOSP<-dt_diagnostics_AP%>%transmute(idp,cod=as.character(cod),dat,agr)%>%
+  bind_rows(select(dt_diagnostics_HOSP,idp,cod,dat,agr))%>%
+  bind_rows(dt_procediments)%>%bind_rows(dt_procediments2)
+
+
+dt_cataleg<-readxl::read_excel(conductor_codis,col_types = "text")%>%select(cod,DM2,agr,agr1,agr_Farmac,agr11,agr1_amp,agr_Niad,agr_Insul_Ado,agr_Comp_Vasc)
+
+
+
+############################################
+#i)
+#dt_diagnostics_HOSP
+############################################
+#ii)
+#dt_diagnostics_AP
+############################################
+#iii)
+#dt_derivacions
+############################################
+#iv)
+#dt_facturacio
+############################################
+#v)
+#dt_poblacio
+############################################
+#vi)
+#dt_tabaquisme
+############################################
+#vii)
+#dt_analitiques
+############################################
+#viii)
+#dt_cliniques
+############################################
+#
+#[[Tabla 2]].
+#variables sociodemogrÃ fiques::-->           [dt_tabaquisme+dt_poblacio+dt_cliniques]
+#[[Tabla 3]].
+#variables comorbolidades::-->               [dt_diagnostics_HOSP+dt_diagnostics_AP]
+#[[Tabla 4]].
+#variables clinicas relacioandas con DM2::-->[dt_cliniques+dt_diagnostics_HOSP+dt_diagnostics_AP]
+#[[Tabla 5]].
+#variables de laboratorio::-->               [dt_analitiques]
+#[[Tabla 6]].
+#variables relacionadas con la Ãºlcera::-->   [dt_facturacio+dt_diagnostics_HOSP+dt_diagnostics_AP]
+#[[Tabla 7]].
+#variables Medicacion concamitante::-->      [dt_facturacio]
+```
+
+## 2. Agregacio de dades
+
+```{r agregacio1, include=F}
+# 2.1 agregacio INCLUSIO -----------
+#####################################################################################################
+# DM2!!! INCLUSIO!!
+dtagr_INCLUSIONS_2018_EPIPEU_AP_HOSP<-agregar_problemes(select(dt_diagnostics_AP_HOSP,idp,cod,dat),
+                                           bd.dindex = "20181231",
+                                           dt.agregadors=select(dt_cataleg,cod,agr=DM2),
+                                           finestra.dies=c(-Inf,0),prefix = "INCLUSIO.") 
+```
+
+```{r agregacio2 ,include=F}
+# 2.2 agregacio Problemes de salut ------------
+#(minim data) 
+#####################################################################################################
+# global!!! Font: GLOBAL!! 
+
+#i)
+#Patologies Previes! [cap -INF]
+dtagr_problemes_2018_EPIPEU_AP_HOSP1a<-agregar_problemes(select(dt_diagnostics_AP_HOSP,idp,cod,dat),
+                                        bd.dindex = "20181231",
+                                        dt.agregadors=select(dt_cataleg,cod,agr),
+                                        finestra.dies=c(-Inf,0),prefix = "DG.")
+dtagr_problemes_2018_EPIPEU_AP_HOSP1b<-agregar_problemes(select(dt_diagnostics_AP_HOSP,idp,cod,dat),
+                                        bd.dindex = "20181231",
+                                        dt.agregadors=select(dt_cataleg,cod,agr=agr_Comp_Vasc),
+                                        finestra.dies=c(-Inf,0),prefix = "DG.")
+
+
+# TOTS els casos que tinguin:: [PIE_Diabetico i/o ulcera i/o Gangrena i/o Articulació de Charcot i/o Osteomielitis] agr11
+#27.11.2020 canvi a infinit prova fet el 28.11.2020, ha d'anar 365 dies!
+#####################################################################################################
+# global!!! Font: GLOBAL!! 
+#[un any anterior!!]UEIP
+#ii)
+dtagr_problemes_2018_EPIPEU_AP_HOSP2<-agregar_problemes(select(dt_diagnostics_AP_HOSP,idp,cod,dat),
+                                        bd.dindex = "20181231",
+                                        dt.agregadors=select(dt_cataleg,cod,agr=agr1),
+                                        finestra.dies=c(-365,0),prefix = "GRUP365.")
+
+
+#ii)[ABANS !!! NO BORRAR]UEIP
+dtagr_problemes_2018_EPIPEU_AP_HOSP2b<-agregar_problemes(select(dt_diagnostics_AP_HOSP,idp,cod,dat),
+                                        bd.dindex = "20181231",
+                                        dt.agregadors=select(dt_cataleg,cod,agr=agr11),
+                                        finestra.dies=c(-365,0),prefix = "GRUP365.")
+
+#[cap -INF]UEIP
+#iii)
+dtagr_problemes_2018_EPIPEU_AP_HOSP3<-agregar_problemes(select(dt_diagnostics_AP_HOSP,idp,cod,dat),
+                                        bd.dindex = "20181231",
+                                        dt.agregadors=select(dt_cataleg,cod,agr=agr1),
+                                        finestra.dies=c(-Inf,0),prefix = "GRUP.")
+
+#iv)[un any anterior!!]UEIPA
+dtagr_problemes_2018_EPIPEU_AP_HOSP4<-agregar_problemes(select(dt_diagnostics_AP_HOSP,idp,cod,dat),
+                                        bd.dindex = "20181231",
+                                        dt.agregadors=select(dt_cataleg,cod,agr=agr1_amp),
+                                        finestra.dies=c(-365,0),prefix = "GRUP365.")
+
+
+
+
+
+
+#####################################################################################################
+# Derivacions  ULTIM ANY
+dtagr_derivacions_2018_EPIPEU_AP_HOSP<-agregar_problemes(select(dt_derivacions,idp,cod,dat),
+                                            bd.dindex = "20181231",
+                                            dt.agregadors=select(dt_cataleg,cod,agr),
+                                            finestra.dies=c(-365,0),prefix = "Deriv2018.")
+
+
+```
+
+
+```{r agregacio3, include=F}
+
+# 2.3 agregacio facturacio ------------
+## eps 3 mesos  abans!!! (minim data) 90 dies! [27.11.2020]
+dtagr_facturacio<-dt_facturacio %>% transmute(idp,cod,dat,env)
+# 
+dtagr_facturat_2018_EPIPEU1<-agregar_facturacio(
+  dt=dtagr_facturacio,
+  bd.dindex="20181231",
+  finestra.dies=c(-90,0),
+  dt.agregadors=select(dt_cataleg,cod,agr=agr_Farmac),
+  prefix="FF.",
+  camp_agregador="agr",
+  agregar_data=T)
+dtagr_facturat_2018_EPIPEU2<-agregar_facturacio(
+  dt=dtagr_facturacio,
+  bd.dindex="20181231",
+  finestra.dies=c(-90,0),
+  dt.agregadors=select(dt_cataleg,cod,agr=agr),
+  prefix="FF.",
+  camp_agregador="agr",
+  agregar_data=T)
+
+dtagr_facturat_2018_EPIPEU3<-agregar_facturacio(
+  dt=dtagr_facturacio,
+  bd.dindex="20181231",
+  finestra.dies=c(-90,0),
+  dt.agregadors=select(dt_cataleg,cod,agr=agr_Niad),
+  prefix="FF.",
+  camp_agregador="agr",
+  agregar_data=T)
+
+dtagr_facturat_2018_EPIPEU4<-agregar_facturacio(
+  dt=dtagr_facturacio,
+  bd.dindex="20181231",
+  finestra.dies=c(-90,0),
+  dt.agregadors=select(dt_cataleg,cod,agr=agr_Insul_Ado),
+  prefix="FF.",
+  camp_agregador="agr",
+  agregar_data=T)
+
+```
+
+```{r agregacio4, include=F}
+# 2.4 agregacio Analitiques+ Cliniques ------------
+# data mes propera!
+# analÃ?tiques
+dt_variables<-dt_analitiques%>% bind_rows(dt_cliniques) %>% select(-agr) %>% 
+  left_join(select(dt_cataleg,cod,agr),by="cod") %>% 
+  select(-cod) %>% rename(cod=agr)
+# eps 1 anys abans!!!
+dtagr_variables_2018_EPIPEU<-agregar_analitiques(dt=dt_variables,bd.dindex="20181231",finestra.dies = c(-365,0))
+#dtagr_variables_EPIPEU<-agregar_analitiques(dt=dt_variables,bd.dindex="20181231",finestra.dies = c(-Inf,0))
+```
+
+```{r agregacio5, include=F}
+# 2.5 agregacio Tabaquisme ------------
+# tabaquisme: 
+dt_tabaquisme<-dt_tabaquisme %>% transmute(idp,cod="tabac",dat,val)
+dtagr_tabac_2018_EPIPEU<-agregar_analitiques(dt=dt_tabaquisme,bd.dindex="20181231",finestra.dies = c(-Inf,0))
+```
+
+
+```{r agregacio6, include=F}
+# 2.6 agregacio Poblacio ------------
+# mostra N=10000
+dtagr_poblacio_2018_EPIPEU<-dt_poblacio
+```
+
+## 3. Fusio de dades
+
+```{r fusio,include=F}
+#Fem la Taula Final:[PLana]
+
+
+
+#NO BORRAR!!
+#left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP2b,-dtindex),by="idp")
+
+dt_plana<-dtagr_poblacio_2018_EPIPEU %>%
+ left_join(select(dtagr_INCLUSIONS_2018_EPIPEU_AP_HOSP,-dtindex),by="idp")%>%
+  left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP1a,-dtindex),by="idp")%>%
+   left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP1b,-dtindex),by="idp")%>%
+     left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP2,-dtindex),by="idp")%>%
+      left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP2b,-dtindex),by="idp")%>%
+       left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP3,-dtindex),by="idp")%>% 
+        left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP4,-dtindex),by="idp")%>% 
+         left_join(select(dtagr_derivacions_2018_EPIPEU_AP_HOSP,-dtindex),by="idp")%>%
+          left_join(select(dtagr_facturat_2018_EPIPEU1,-dtindex),by="idp")%>%
+           left_join(select(dtagr_facturat_2018_EPIPEU2,-dtindex),by="idp")%>%
+            left_join(select(dtagr_facturat_2018_EPIPEU3,-dtindex),by="idp")%>%
+             left_join(select(dtagr_facturat_2018_EPIPEU4,-dtindex),by="idp")%>%
+              left_join(select(dtagr_variables_2018_EPIPEU,-dtindex),by="idp")%>%
+               left_join(select(dtagr_tabac_2018_EPIPEU,-dtindex),by="idp")
+                
+            
+            
+
+
+
+
+```
+## 4. Errors de la B.D per corregir!
+
+```{r errors_charcot, include=T}
+#####################################################
+#DG.Pie_Ulcera_Sin_Charcot=="Si" i  DG.ART_CHA=="Si"#
+#####################################################
+#
+#
+#
+##(Pie diabÃ©tico y de ulceras de miembro inferior sin Charcot i NeuropatÃ?a de Charcot="Si") -->[NO POT SER : 3 pacients amb resultats Erronis!]
+#
+#
+#Pacient i)
+#Error_Charcot1  
+#Pacient ii)
+#Error_Charcot2
+#Pacient iii)
+#Error_Charcot3
+#####################################################
+```
+
+## 5. Salvar taula plana
+
+```{r salvar}
+saveRDS(dt_plana, file=here::here(directori_dades,"dt_plana.rds"))
+```
