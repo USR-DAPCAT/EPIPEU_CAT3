@@ -39,21 +39,24 @@ params:
 
 ## 0. Estado:
 
-**Ultimas actualizaciones   Enero/ 2021** 
+**Ultimas actualizaciones   Febrero/ 2021** 
 
 &check; Agrupadores para amputaciones y revascularizaciones  <br/>
 &check; Solo 2 grupos con ulcera/pie diabetico ( primaria+hospitales) VS .sin ulcera/pie diabetico (primaria+hospitales) <br/>
 &check; Nuevas agregaciones de diagnosticos y farmacos <br/>
 &check; Programacion de nuevas recodificaciones <br/>
-&check; Tabla Descriptiva Exploratoria General, por varlidación  <br/>
-&check; Descriptiva TABLA 3 : Variables sociodemograficas,por varlidación  <br/>
-&check; Descriptiva TABLA 4 : Comorbilidades Generales,por varlidacion  <br/>
-&check; Descriptiva TABLA 5 : Comorbilidades relacionadas con pie diabetico/UEIP,por varlidación  <br/>
-&check; Descriptiva TABLA 6 : Exploracion fisica,por varlidacion  <br/>
-&check; Descriptiva TABLA 7 : Medicacion general,antidiabeticos orales y antidiabeticos inyectables,por varlidacion  <br/>
-&check; Descriptiva TABLA 8 : Parametros de laboratorio,por varlidacion  <br/>
-&check; Descriptiva TABLA 9 : Derivaciones,por varlidacion  <br/>
-
+&check; Tabla Descriptiva Exploratoria General, por varlidacion  <br/>
+&check; Descriptiva Exploratoria General.Todas las variables  <br/>
+&check; Tabla UEIP:[Ulceras Extremidades Inferiores y/o Pie Diabetico] /UEIPA:[Ulceras Extremidades Inferiores y/o Pie Diabetico y/o Amputaciones] <br/>
+&check; Descriptiva Exploratoria General.BASAL.  <br/>
+&check; Descriptiva Exploratoria General.Comorbilidades.  <br/>
+&check; Descriptiva Exploratoria General.Antecedentes de Pie diabetico.  <br/>
+&check; Descriptiva Exploratoria General.Exploracion.  <br/>
+&check; Descriptiva Exploratoria General.Laboratorio.  <br/>
+&check; Descriptiva Exploratoria General.Tratamiento.  <br/>
+&check; Descriptiva Exploratoria General / UEIPA .  <br/> 
+ 
+ 
 **Realizado**
 
 &check; Lectura / importacion de archivos  <br/>
@@ -62,23 +65,21 @@ params:
 &check; Agregacion de datos segun protocolo <br/>
 &check; Calculo de varibles y recodificaciones <br/>
 &check; Descriptiva exploratoria <br/>
-&check; Nuevas agregaciones de diagnosticos y fármacos <br/>
-&check; Programación de nuevas recodificaciones <br/>
-&check; Tabla Descriptiva Exploratoria General, por varlidacion  <br/>
-&check; Descriptiva TABLA 3 : Variables sociodemograficas,por varlidacion  <br/>
-&check; Descriptiva TABLA 4 : Comorbilidades Generales,por varlidacion  <br/>
-&check; Descriptiva TABLA 5 : Comorbilidades relacionadas con pie diabetico/UEIP,por varlidacion  <br/>
-&check; Descriptiva TABLA 6 : Exploracion fisica,por varlidacion  <br/>
-&check; Descriptiva TABLA 7 : Medicacion general,antidiabeticos orales y antidiabeticos inyectables,por varlidación  <br/>
-&check; Descriptiva TABLA 8 : Parametros de laboratorio,por varlidacion  <br/>
-&check; Descriptiva TABLA 9 : Derivaciones,por varlidacion  <br/>
+&check; Nuevas agregaciones de diagnosticos y farmacos <br/>
+&check; Programacion de nuevas recodificaciones <br/>
+&check; Descriptiva Exploratoria General.Todas las variables  <br/>
+&check; Tabla UEIP:[Ulceras Extremidades Inferiores y/o Pie Diabetico] /UEIPA:[Ulceras Extremidades Inferiores y/o Pie Diabetico y/o Amputaciones] <br/>
+&check; Descriptiva Exploratoria General.BASAL.  <br/>
+&check; Descriptiva Exploratoria General.Comorbilidades.  <br/>
+&check; Descriptiva Exploratoria General.Antecedentes de Pie diabetico.  <br/>
+&check; Descriptiva Exploratoria General.Exploracion.  <br/>
+&check; Descriptiva Exploratoria General.Laboratorio.  <br/>
+&check; Descriptiva Exploratoria General.Tratamiento.  <br/>
+&check; Descriptiva Exploratoria General / UEIPA .  <br/> 
 
 **Pendent**
 
 &check; Revision y depuracion de errores   <br/>
-&check; Duda codigos CAP/HOSP  en Pie Diabético    <br/>
-&check; Duda codigos CAP/HOSP     <br/>
-&check; No correspondencia entre catalago y protocolo      <br/>
 
 # Fase de validacion de base
 
@@ -90,8 +91,6 @@ knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, include=F,size
 #02.11.2020@
 ############
 
-# EStudiar els missings (.na) i quan juguem amb Problemes i valors analatics o valors clinics! 
-# Dema 2.11.2020 , dia dels morts!
 
 gc()
 # libreries i funcions
@@ -115,15 +114,13 @@ dt_plana<-readRDS(here::here(params$dir_dades,"dt_plana.rds")) %>% as_tibble()
 
 ```
 The codes considered for the classification of diabetes TYPE 2
-
 ```{r codis_diabetes, include=T}
 
 readxl::read_excel(conductor_codis,col_types = "text")%>%select(cod,DM2,Descripcio)%>% filter(DM2=="DM2")%>%select(cod,Descripcio)%>% knitr::kable(caption="ICD10 Diabetes type 2")
 
 ```
-
-## Descriptiva Exploratoria General 1
-```{r resultats1, include=T}
+## Flow chart 
+```{r Flow chart, include=T}
 
 #13.11.2020
 
@@ -152,7 +149,7 @@ flow_chart2<-criteris_exclusio_diagrama2(dt=dt_plana,
                                          pob_lab=c("Muestra epiPEUCAT DM2 ","Muestra epiPEUCAT DM2 sin exclusiones"),
                                          colors=c("white","grey"),
                                          POB=459331 ,
-                                         POB_LAB="SIDIAP:La población de pacientes con DM2 de 2017 aprox: ")
+                                         POB_LAB="SIDIAP:La poblacion de pacientes con DM2 de 2017 aprox: ")
 
 
 flow_chart2
@@ -169,14 +166,30 @@ dt_plana_exc<-dt_plana_exc%>%mutate_at(extreure.variables("missings",conductor,d
 dt_plana_exc<-etiquetar(dt_plana_exc,taulavariables=conductor)
 
 ```
+## Descriptiva Exploratoria General.Todas las variables.
+```{r resultats0, include=T}
 
-## Descriptiva Exploratoria General 2
-```{r resultats2, include=T}
-variables_noconductuals<-extreure.variables("Taula00",taulavariables=conductor)[!extreure.variables("Taula00",taulavariables = conductor)%in%names(dt_plana_exc)]
+#i)
+formula_Taula00<-formula.text("Taula00",y="",taulavariables = conductor,dt=dt_plana_exc)
+#ii)
+formula_TaulaBasal<-formula.text("TaulaBasal",y="",taulavariables = conductor,dt=dt_plana_exc)
+#iii)
+formula_TaulaComorb<-formula.text("TaulaComorb",y="",taulavariables = conductor,dt=dt_plana_exc)
+#iv)
+formula_TaulaAnt_Peu_Diab<-formula.text("TaulaAntPeuDiab",y="",taulavariables = conductor,dt=dt_plana_exc)
+#v)
+formula_TaulaExploracio<-formula.text("TaulaExploracio",y="",taulavariables = conductor,dt=dt_plana_exc)
+#vi)
+formula_TaulaLab<-formula.text("TaulaLab",y="",taulavariables = conductor,dt=dt_plana_exc)
+#vii)
+formula_TaulaTract<-formula.text("TaulaTract",y="",taulavariables = conductor,dt=dt_plana_exc)
+```
 
-formula_taula00<-formula.text("Taula00",y="",taulavariables = conductor,elimina = variables_noconductuals)
+```{r resultats1, include=T}
 
-descrTable(formula_taula00,
+#Part1
+#i)
+descrTable(formula_Taula00,
            method =2,
            Q1 = 0, 
            Q3 = 1,
@@ -185,18 +198,16 @@ descrTable(formula_taula00,
            max.xlev = 200, 
            show.p.overall=FALSE,
            show.n = T,
-          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption = "Descriptiva GENERAL 1 :[Frecuencia,Mediana,M�?n,Max]")
+          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption = "Descriptiva GENERAL 1 :[Frecuencia,Mediana,Min,Max]")
+```
+## UEIP:[Ulceras Extremidades Inferiores y/o Pie Diabetico] /UEIPA:[Ulceras Extremidades Inferiores y/o Pie Diabetico y/o Amputaciones]
+```{r resultats8, include=T}
+#Part2
 
-
-
-
-
-  
-descrTable(~ GRUP.UEIP+
-             GRUP365.UEIP+
-             GRUP365.UEIPA+
-             GRUP365.PIE_Diabetico_ulcera_g_art_ch_ost+
-             GRUP2,
+#ii)
+descrTable(~ GRUP365.UEIP+
+             GRUP365.UEIPA
+             ,
            method =2,
            Q1 = 0, Q3 = 1,
            data=dt_plana_exc,
@@ -204,47 +215,95 @@ descrTable(~ GRUP.UEIP+
            max.xlev = 100, 
            show.p.overall=FALSE,
            show.n = T,
-          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption="Descriptiva GENERAL 2:[Frecuencia,Mediana,M�?n,Max]")
+          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption="Descriptiva GENERAL 2:[Frecuencia,Mediana,Min,Max]")
+
+
 ```
-
-
-
+## Descriptiva Exploratoria General.BASAL.
+```{r resultats2, include=T}
+#ii)
+descrTable(formula_TaulaBasal,
+           method =2,
+           Q1 = 0, 
+           Q3 = 1,
+           data=dt_plana_exc,
+           include.miss = TRUE,
+           max.xlev = 200, 
+           show.p.overall=FALSE,
+           show.n = T,
+          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption = "Descriptiva Exploratoria General.BASAL :[Frecuencia,Mediana,Min,Max]")
+```
+## Descriptiva Exploratoria General.Comorbilidades.
 ```{r resultats3, include=T}
-formula_taula00_0<-formula.text("Taula00",y=c("GRUP365.UEIP"),taulavariables = conductor,dt=dt_plana_exc)
-formula_taula00_1<-formula.text("Taula00",y=c("GRUP365.UEIPA"),taulavariables = conductor,dt=dt_plana_exc)
-
-
-
-#0) TAULA.Ulcera/Pie Diabético(Primaria+Hospital)
-
-descrTable(formula_taula00_0,
-                method =2,
-                Q1 = 0, Q3 = 1,
-                data=dt_plana_exc,
-                include.miss = TRUE,
-                max.xlev = 100, 
-                show.p.overall=FALSE,
-                show.n = T,
-                hide.no="No",simplify=F)%>% export2md(header.background = "grey", header.color = "white", size=12,caption = "Taula 00.Variables TOTALES / UEIP(Primaria+Hospital).Un a�o  hacia atras.Descriptiva general:[Frecuencia,Mediana,Min,Max]")
-
-
-#1) TAULA.Ulcera/Pie Diabético/Amputaciones(Primaria+Hospital)
-
-descrTable(formula_taula00_1,
-                method =2,
-                Q1 = 0, Q3 = 1,
-                data=dt_plana_exc,
-                include.miss = TRUE,
-                max.xlev = 100, 
-                show.p.overall=FALSE,
-                show.n = T,
-                hide.no="No",simplify=F)%>% export2md(header.background = "grey", header.color = "white", size=12,caption = "Taula 00.Variables TOTALES / UEIPA  -ulcera+pie+amputacion- (Primaria+Hospital).Un a�o  hacia atras.Descriptiva general:[Frecuencia,Mediana,Min,Max]")
-
-
+#iii)
+descrTable(formula_TaulaComorb,
+           method =2,
+           Q1 = 0, 
+           Q3 = 1,
+           data=dt_plana_exc,
+           include.miss = TRUE,
+           max.xlev = 200, 
+           show.p.overall=FALSE,
+           show.n = T,
+          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption = "Descriptiva Exploratoria General.Comorbilidades:[Frecuencia,Mediana,Min,Max]")
 ```
-
+## Descriptiva Exploratoria General.Antecedentes de Pie diabetico.
+```{r resultats4, include=T}
+#iv)
+descrTable(formula_TaulaAnt_Peu_Diab,
+           method =2,
+           Q1 = 0, 
+           Q3 = 1,
+           data=dt_plana_exc,
+           include.miss = TRUE,
+           max.xlev = 200, 
+           show.p.overall=FALSE,
+           show.n = T,
+          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption = "Descriptiva Exploratoria General.Antecedentes de Pie diabetico :[Frecuencia,Mediana,Min,Max]")
+```
+## Descriptiva Exploratoria General.Exploracion.
+```{r resultats5, include=T}
+#v)
+descrTable(formula_TaulaExploracio,
+           method =2,
+           Q1 = 0, 
+           Q3 = 1,
+           data=dt_plana_exc,
+           include.miss = TRUE,
+           max.xlev = 200, 
+           show.p.overall=FALSE,
+           show.n = T,
+          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption = "Descriptiva Exploratoria General.Exploracion:[Frecuencia,Mediana,Min,Max]")
+```
+## Descriptiva Exploratoria General.Laboratorio.
+```{r resultats6, include=T}
+#vi)
+descrTable(formula_TaulaLab,
+           method =2,
+           Q1 = 0, 
+           Q3 = 1,
+           data=dt_plana_exc,
+           include.miss = TRUE,
+           max.xlev = 200, 
+           show.p.overall=FALSE,
+           show.n = T,
+          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption = "Descriptiva Exploratoria General.Laboratorio:[Frecuencia,Mediana,Min,Max]")
+```
+## Descriptiva Exploratoria General.Tratamiento.
+```{r resultats7, include=T}
+#vii)
+descrTable(formula_TaulaTract,
+           method =2,
+           Q1 = 0, 
+           Q3 = 1,
+           data=dt_plana_exc,
+           include.miss = TRUE,
+           max.xlev = 200, 
+           show.p.overall=FALSE,
+           show.n = T,
+          hide.no="No",simplify=F)%>%export2md(header.background = "grey", header.color = "white", size=12,caption = "Descriptiva Exploratoria General.Tratamiento:[Frecuencia,Mediana,Min,Max]")
+```
 ## 4. Salvar taula plana
-
 ```{r salvar}
 saveRDS(dt_plana_exc, file=here::here(params$dir_dades,"dt_plana_exc.rds"))
 ```

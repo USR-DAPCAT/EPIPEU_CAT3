@@ -57,10 +57,7 @@ directori_dades_origen<-params$dir_dades_origen
 directori_dades<-params$dir_dades
 #   template: template.html
 ```
-
-
 ## 1. Lectura 
-
 ```{r lectura, include=T}
 # 1 Lectura -----------
 #12.Xii.2020
@@ -150,9 +147,7 @@ dt_cataleg<-readxl::read_excel(conductor_codis,col_types = "text")%>%select(cod,
 #[[Tabla 7]].
 #variables Medicacion concamitante::-->      [dt_facturacio]
 ```
-
 ## 2. Agregacio de dades
-
 ```{r agregacio1, include=F}
 # 2.1 agregacio INCLUSIO -----------
 #####################################################################################################
@@ -274,7 +269,7 @@ dtagr_facturat_2018_EPIPEU4<-agregar_facturacio(
 ```{r agregacio4, include=F}
 # 2.4 agregacio Analitiques+ Cliniques ------------
 # data mes propera!
-# analÃ?tiques
+# analatiques
 dt_variables<-dt_analitiques%>% bind_rows(dt_cliniques) %>% select(-agr) %>% 
   left_join(select(dt_cataleg,cod,agr),by="cod") %>% 
   select(-cod) %>% rename(cod=agr)
@@ -296,9 +291,7 @@ dtagr_tabac_2018_EPIPEU<-agregar_analitiques(dt=dt_tabaquisme,bd.dindex="2018123
 # mostra N=10000
 dtagr_poblacio_2018_EPIPEU<-dt_poblacio
 ```
-
 ## 3. Fusio de dades
-
 ```{r fusio,include=F}
 #Fem la Taula Final:[PLana]
 
@@ -339,7 +332,7 @@ dt_plana<-dtagr_poblacio_2018_EPIPEU %>%
 #
 #
 #
-##(Pie diabÃ©tico y de ulceras de miembro inferior sin Charcot i NeuropatÃ?a de Charcot="Si") -->[NO POT SER : 3 pacients amb resultats Erronis!]
+##(Pie diabetico y de ulceras de miembro inferior sin Charcot i NeuropatÃ?a de Charcot="Si") -->[NO POT SER : 3 pacients amb resultats Erronis!]
 #
 #
 #Pacient i)
@@ -350,9 +343,7 @@ dt_plana<-dtagr_poblacio_2018_EPIPEU %>%
 #Error_Charcot3
 #####################################################
 ```
-
 ## 5. Salvar taula plana
-
 ```{r salvar}
 saveRDS(dt_plana, file=here::here(directori_dades,"dt_plana.rds"))
 ```

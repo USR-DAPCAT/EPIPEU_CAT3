@@ -1,6 +1,23 @@
 ####################
-# [10.02.2021]14:01#
+# [11.02.2021]18:45#
 ####################
+
+
+####################
+#Hola Ray, 
+#he ordenado el Excel de Conductor, 
+#apartado de los fármacos, el resto esta ok, 
+#bueno a ver cuanto salen con ulceras teniendo en cuenta las amputaciones también.
+#De Manel, tengo que separar las combinaciones de los fármacos antidiabéticos y
+#te pasare un Excel de códigos y conductor diferente para que se confunda con el de epiPEUCAT. 
+#Pero quizás tu lo puedes hacer mas fácil en nivel de "R", 
+#contando cada combinación por separado, hare lo que tu me digas que es mas fácil para ti..
+#Gracias
+#B
+#################### 
+
+
+
 # 02.02.2021    #
 
 # eps els Pie diabético--> tiene las amputaciones!!!
@@ -378,8 +395,10 @@ rmarkdown::render(input="./codi/3_analisis_epipeu.Rmd",
                   output_file=here::here("outputs/informe_exploratori_final.html"),
                   params = list(dir_dades=dir_dades_origen))
 #----------------------------------------------------------------------------------------#
-
-
+rmarkdown::render(input="./codi/3_analisis_epipeu2.Rmd",
+                  output_file=here::here("outputs/informe_exploratori_final2.html"),
+                  params = list(dir_dades=dir_dades_origen))
+#----------------------------------------------------------------------------------------#
 
 
 
