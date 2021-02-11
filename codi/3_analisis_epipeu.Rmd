@@ -41,12 +41,12 @@ params:
 
 **Ultimas actualizaciones   Febrero/ 2021** 
 
-&check; Agrupadores para amputaciones y revascularizaciones  <br/>
-&check; Solo 2 grupos con ulcera/pie diabetico ( primaria+hospitales) VS .sin ulcera/pie diabetico (primaria+hospitales) <br/>
-&check; Nuevas agregaciones de diagnosticos y farmacos <br/>
-&check; Programacion de nuevas recodificaciones <br/>
-&check; Tabla Descriptiva Exploratoria General, por varlidacion  <br/>
-&check; Descriptiva Exploratoria General.Todas las variables  <br/>
+&check; Agrupadores para amputaciones y revascularizaciones.  <br/>
+&check; Solo 2 grupos con ulcera/pie diabetico ( primaria+hospitales) VS .sin ulcera/pie diabetico (primaria+hospitales). <br/>
+&check; Nuevas agregaciones de diagnosticos y farmacos. <br/>
+&check; Programacion de nuevas recodificaciones. <br/>
+&check; Tabla Descriptiva Exploratoria General, por varlidacion.  <br/>
+&check; Descriptiva Exploratoria General.Todas las variables.  <br/>
 &check; Tabla UEIP:[Ulceras Extremidades Inferiores y/o Pie Diabetico] /UEIPA:[Ulceras Extremidades Inferiores y/o Pie Diabetico y/o Amputaciones] <br/>
 &check; Descriptiva Exploratoria General.BASAL.  <br/>
 &check; Descriptiva Exploratoria General.Comorbilidades.  <br/>
@@ -59,15 +59,15 @@ params:
  
 **Realizado**
 
-&check; Lectura / importacion de archivos  <br/>
-&check; Generacion de conductors   <br/>
-&check; Revision de codigos  <br/>
-&check; Agregacion de datos segun protocolo <br/>
-&check; Calculo de varibles y recodificaciones <br/>
-&check; Descriptiva exploratoria <br/>
-&check; Nuevas agregaciones de diagnosticos y farmacos <br/>
-&check; Programacion de nuevas recodificaciones <br/>
-&check; Descriptiva Exploratoria General.Todas las variables  <br/>
+&check; Lectura / importacion de archivos.  <br/>
+&check; Generacion de conductors.   <br/>
+&check; Revision de codigos.  <br/>
+&check; Agregacion de datos segun protocolo. <br/>
+&check; Calculo de varibles y recodificaciones. <br/>
+&check; Descriptiva exploratoria. <br/>
+&check; Nuevas agregaciones de diagnosticos y farmacos. <br/>
+&check; Programacion de nuevas recodificaciones. <br/>
+&check; Descriptiva Exploratoria General.Todas las variables.  <br/>
 &check; Tabla UEIP:[Ulceras Extremidades Inferiores y/o Pie Diabetico] /UEIPA:[Ulceras Extremidades Inferiores y/o Pie Diabetico y/o Amputaciones] <br/>
 &check; Descriptiva Exploratoria General.BASAL.  <br/>
 &check; Descriptiva Exploratoria General.Comorbilidades.  <br/>
@@ -79,7 +79,8 @@ params:
 
 **Pendent**
 
-&check; Revision y depuracion de errores   <br/>
+&check; Revision y depuracion de errores.   <br/>
+&check; Modelos multivariables.   <br/>
 
 # Fase de validacion de base
 
