@@ -19,9 +19,7 @@ output:
 params:
   dir_dades_origen: "../../DADES/EPIPEU_CAT3/dades/mostra"
   dir_dades: "dades/mostra"
-  
-
-  
+  dir_dades2: "../../PROJECTES__2021/ECONTROL2010_18/dades/sidiap/test"
 ---
 
 &nbsp;
@@ -148,7 +146,21 @@ dt_cataleg<-readxl::read_excel(conductor_codis,col_types = "text")%>%select(cod,
 #variables Medicacion concamitante::-->      [dt_facturacio]
 ```
 ## 2. Agregacio de dades
+
+```{r genero_dt_index}
+#[15.2.2021]
+
+#dt_index_DH<-
+#  dt_poblacio %>% select(idp,entrada,sortida) %>% mutate(kk=1) %>%
+#  left_join(tibble(dtindex=seq(20100630,20180630,10000),kk=1),by="kk") %>% 
+#  filter(entrada<=dtindex & dtindex<=sortida)  %>%  # Filtro per usuari actiu en data index
+#  select(-c(kk,entrada,sortida))
+
+```
+
+
 ```{r agregacio1, include=F}
+
 # 2.1 agregacio INCLUSIO -----------
 #####################################################################################################
 # DM2!!! INCLUSIO!!
@@ -346,4 +358,6 @@ dt_plana<-dtagr_poblacio_2018_EPIPEU %>%
 ## 5. Salvar taula plana
 ```{r salvar}
 saveRDS(dt_plana, file=here::here(directori_dades,"dt_plana.rds"))
+#saveRDS(dt_plana,file=here::here(params$dir_dades2,"dt_PREVAL_DH2.rds"))
+
 ```
