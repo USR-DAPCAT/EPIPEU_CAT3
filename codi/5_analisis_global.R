@@ -1,6 +1,14 @@
 ####################
-# [18.02.2021]00:30#
+# [20.02.2021]11:30#
 ####################
+
+
+
+#Jordi Real, comenta:
+#No sé si la prevalencia de ulceras de por si ya seria de interés
+#En todo caso, si lo que se quiere es ver factores  relacionados con las úlceras, yo: 
+#tiraría un año para atrás (Si tenemos datos) y calcularía  incidencia de nueva úlcera (a un año),
+#y factores asociados. #En este caso un modelo tendría menos riesgo de sesgo. 
 
 
 ####################
