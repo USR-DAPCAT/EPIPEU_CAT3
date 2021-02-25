@@ -393,19 +393,63 @@ dt_plana<-dt_plana%>%mutate(MON_PDRE.valor2=MON_PDRE.valor,
 
 ##combinacions DIAGNOSTICS+CLINIQUES+ANALITIQUES!:
 
+############
+#25.02.2021#
+############
+#
+#
+#
+#--------------------------------------------------------------------------------------------------------------#
+##i)*  HTA
+##HTA aplicar algoritmo de diagnostico registrado o tratamiento antihipertensivo
+#"FF.Hipotensores_altres"                    
+#"FF.Hipotensores_ANTICA"                    
+#"FF.Hipotensores_ARA"                      
+#"FF.Hipotensores_BBK"                       
+#"FF.Hipotensores_DIU"                       
+#"FF.Hipotensores_IECA"            
+#--------------------------------------------------------------------------------------------------------------#
+#dt_plana<-dt_plana%>%mutate(DG.HTA2=ifelse(DG.HTA==1  | FF.Hipotensores==1 ,1,0)) 
+dt_plana<-dt_plana%>%mutate(DG.HTA2=ifelse(DG.HTA==1  |
+                                            FF.Hipotensores_altres ==1  |                   
+                                            FF.Hipotensores_ANTICA ==1  |                    
+                                            FF.Hipotensores_ARA    ==1  |                      
+                                            FF.Hipotensores_BBK    ==1  |                    
+                                            FF.Hipotensores_DIU    ==1  |                      
+                                            FF.Hipotensores_IECA ,1,0)) 
+#--------------------------------------------------------------------------------------------------------------#
+
+
+
+
+#--------------------------------------------------------------------------------------------------------------#
+#ii)* HIPERCOLESTEROLEMIA #
+##Hipercolesterolemia diagnostico registrado o tto hipolipemiante
+#"FF.Hipolipemiantes_altres"                 
+#"FF.Hipolipemiantes_ESTA"                  
+#"FF.Hipolipemiantes_EZE"                    
+#"FF.Hipolipemiantes_FIB"   
+#--------------------------------------------------------------------------------------------------------------#
+#dt_plana<-dt_plana%>%mutate(DG.Hipercol2=ifelse(DG.HCOL==1  | FF.Hipolipemiantes==1 ,1,0)) 
+dt_plana<-dt_plana%>%mutate(DG.Hipercol2=ifelse(DG.HCOL==1  | FF.Hipolipemiantes_altres==1  |                 
+                                                              FF.Hipolipemiantes_ESTA  ==1  |                   
+                                                              FF.Hipolipemiantes_EZE   ==1  |        
+                                                              FF.Hipolipemiantes_FIB   ==1,1,0)) 
+#--------------------------------------------------------------------------------------------------------------#
+
 
 
 #--------------------------------------------------------------------------------------------------------------#
 ##i)*  HTA
 ##HTA aplicar algoritmo de diagnostico registrado o tratamiento antihipertensivo
 #--------------------------------------------------------------------------------------------------------------#
-dt_plana<-dt_plana%>%mutate(DG.HTA2=ifelse(DG.HTA==1  | FF.Hipotensores==1 ,1,0)) 
+#dt_plana<-dt_plana%>%mutate(DG.HTA2=ifelse(DG.HTA==1  | FF.Hipotensores==1 ,1,0)) 
 
 #--------------------------------------------------------------------------------------------------------------#
 #ii)* HIPERCOLESTEROLEMIA #
 ##Hipercolesterolemia diagnostico registrado o tto hipolipemiante
 #--------------------------------------------------------------------------------------------------------------#
-dt_plana<-dt_plana%>%mutate(DG.Hipercol2=ifelse(DG.HCOL==1  | FF.Hipolipemiantes==1 ,1,0)) 
+#dt_plana<-dt_plana%>%mutate(DG.Hipercol2=ifelse(DG.HCOL==1  | FF.Hipolipemiantes==1 ,1,0)) 
 
 
 
@@ -510,27 +554,6 @@ dt_plana<-mutate_at(dt_plana, vars( starts_with("FF.") ), funs( if_else(.==0  | 
 ```{r etiquetes}
 
 #dt_plana<-factoritzar.NO.YES(dt_plana,"factor",conductor)
-
-factoritzar.NO.SI<-function(dt=dadesDF,columna="factor",taulavariables="variables_FELIPE.xls"){
-  
-  # dt=dades
-  # columna="factor.YESNO"
-  # taulavariables=conductor_variables
-  
-  # Extreure variables  
-  x<-extreure.variables(taula=columna,taulavariables=taulavariables) 
-  
-  # Seleccionar nomÃ©s variables que estan en dt
-  if (!x[!x%in%names(dt)] %>% length()<1) {print("No existeixen en dt:");print(x[!x%in%names(dt)])}
-  
-  # Selecciono nomes les vars en bdades
-  x<-x[x%in%names(dt)]
-  
-  ###   Factoritzar-les
-  dt[x]<-lapply(dt[x],function(y) factor(y,levels=c(0,1), labels=c("No","Si")))
-  dt
-  
-}
 
 
 dt_plana<-mutate_at(dt_plana, vars( starts_with("INCLUSIO.") ), funs( if_else(.==0  | is.na(.)  ,0,1)))

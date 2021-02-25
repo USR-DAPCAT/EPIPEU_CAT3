@@ -50,7 +50,13 @@ library(dplyr)
 # Funcions 
 link_source<-paste0("https://github.com/jrealgatius/Stat_codis/blob/master/funcions_propies.R","?raw=T")
 devtools::source_url(link_source)
-conductor_codis<-here::here("codis_peucat.xlsx")
+#conductor_codis<-here::here("codis_peucat.xlsx")
+
+#25.02.2021
+conductor_codis<-here::here("CATALEG_PROYECTO_Manel.xlsx")
+
+
+
 directori_dades_origen<-params$dir_dades_origen
 directori_dades<-params$dir_dades
 #   template: template.html
@@ -102,7 +108,10 @@ dt_diagnostics_AP_HOSP<-dt_diagnostics_AP%>%transmute(idp,cod=as.character(cod),
   bind_rows(dt_procediments)%>%bind_rows(dt_procediments2)
 
 
-dt_cataleg<-readxl::read_excel(conductor_codis,col_types = "text")%>%select(cod,DM2,agr,agr1,agr_Farmac,agr11,agr1_amp,agr_Niad,agr_Insul_Ado,agr_Comp_Vasc)
+#dt_cataleg<-readxl::read_excel(conductor_codis,col_types = "text")%>%select(cod,DM2,agr,agr1,agr_Farmac,agr11,agr1_amp,agr_Niad,agr_Insul_Ado,agr_Comp_Vasc)
+
+#17.02.2021#
+dt_cataleg<-readxl::read_excel(conductor_codis,col_types = "text")%>%select(cod,DM2,agr0,agr,agr1,agr_Farmac,agr11,agr1_amp,agr_Niad,agr_Insul_Ado,agr_Comp_Vasc,agr_CVD,agr_Comp_Vasc2)
 
 
 
@@ -186,6 +195,26 @@ dtagr_problemes_2018_EPIPEU_AP_HOSP1b<-agregar_problemes(select(dt_diagnostics_A
                                         bd.dindex = "20181231",
                                         dt.agregadors=select(dt_cataleg,cod,agr=agr_Comp_Vasc),
                                         finestra.dies=c(-Inf,0),prefix = "DG.")
+
+
+
+                                ############
+                                #17.02.2021#
+                                ############
+dtagr_problemes_2018_EPIPEU_AP_HOSP1c<-agregar_problemes(select(dt_diagnostics_AP_HOSP,idp,cod,dat),
+                                        bd.dindex = "20181231",
+                                        dt.agregadors=select(dt_cataleg,cod,agr=agr_CVD),
+                                        finestra.dies=c(-Inf,0),prefix = "DG.")
+
+                                ############
+                                #24.02.2021#
+                                ############
+
+dtagr_problemes_2018_EPIPEU_AP_HOSP1d<-agregar_problemes(select(dt_diagnostics_AP_HOSP,idp,cod,dat),
+                                        bd.dindex = "20181231",
+                                        dt.agregadors=select(dt_cataleg,cod,agr=agr_Comp_Vasc2),
+                                        finestra.dies=c(-Inf,0),prefix = "DG.")
+
 
 
 # TOTS els casos que tinguin:: [PIE_Diabetico i/o ulcera i/o Gangrena i/o Articulació de Charcot i/o Osteomielitis] agr11
@@ -316,17 +345,19 @@ dt_plana<-dtagr_poblacio_2018_EPIPEU %>%
  left_join(select(dtagr_INCLUSIONS_2018_EPIPEU_AP_HOSP,-dtindex),by="idp")%>%
   left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP1a,-dtindex),by="idp")%>%
    left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP1b,-dtindex),by="idp")%>%
-     left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP2,-dtindex),by="idp")%>%
-      left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP2b,-dtindex),by="idp")%>%
-       left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP3,-dtindex),by="idp")%>% 
-        left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP4,-dtindex),by="idp")%>% 
-         left_join(select(dtagr_derivacions_2018_EPIPEU_AP_HOSP,-dtindex),by="idp")%>%
-          left_join(select(dtagr_facturat_2018_EPIPEU1,-dtindex),by="idp")%>%
-           left_join(select(dtagr_facturat_2018_EPIPEU2,-dtindex),by="idp")%>%
-            left_join(select(dtagr_facturat_2018_EPIPEU3,-dtindex),by="idp")%>%
-             left_join(select(dtagr_facturat_2018_EPIPEU4,-dtindex),by="idp")%>%
-              left_join(select(dtagr_variables_2018_EPIPEU,-dtindex),by="idp")%>%
-               left_join(select(dtagr_tabac_2018_EPIPEU,-dtindex),by="idp")
+    left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP1c,-dtindex),by="idp")%>%
+     left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP1d,-dtindex),by="idp")%>%
+      left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP2,-dtindex),by="idp")%>%
+       left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP2b,-dtindex),by="idp")%>%
+        left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP3,-dtindex),by="idp")%>% 
+         left_join(select(dtagr_problemes_2018_EPIPEU_AP_HOSP4,-dtindex),by="idp")%>% 
+          left_join(select(dtagr_derivacions_2018_EPIPEU_AP_HOSP,-dtindex),by="idp")%>%
+           left_join(select(dtagr_facturat_2018_EPIPEU1,-dtindex),by="idp")%>%
+            left_join(select(dtagr_facturat_2018_EPIPEU2,-dtindex),by="idp")%>%
+             left_join(select(dtagr_facturat_2018_EPIPEU3,-dtindex),by="idp")%>%
+              left_join(select(dtagr_facturat_2018_EPIPEU4,-dtindex),by="idp")%>%
+               left_join(select(dtagr_variables_2018_EPIPEU,-dtindex),by="idp")%>%
+                left_join(select(dtagr_tabac_2018_EPIPEU,-dtindex),by="idp")
                 
             
             

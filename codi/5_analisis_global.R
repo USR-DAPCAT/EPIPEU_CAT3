@@ -1,5 +1,5 @@
 ####################
-# [20.02.2021]11:30#
+# [25.02.2021]13:30#
 ####################
 
 
@@ -384,6 +384,24 @@
 #################################################################
 #params = list(dir_dades="../DADES/PREVAL_DM2/sidiap/mostra", year= year),
 
+
+#dir_dades_origen="../../DADES/EPIPEU_CAT3/dades/mostra"
+#----------------------------------------------------------------------------------------# 
+#rmarkdown::render(input="./codi/1_lectura_epipeu.Rmd",
+#                  output_file=paste0(here::here("outputs/Informe_Lectura_Final_DM2_MANEL_"),Sys.Date()),
+#                  params = list(dir_dades=dir_dades_origen,bd.dindex='20181231'))
+#----------------------------------------------------------------------------------------#
+#rmarkdown::render(input="./codi/2_preparacio_epipeu.Rmd",
+#                  output_file=paste0(here::here("outputs/Informe_Preparacio_Final_DM2_MANEL_"),Sys.Date()),
+#                  params = list(dir_dades=dir_dades_origen))
+#----------------------------------------------------------------------------------------#
+#rmarkdown::render(input="./codi/3_analisis_epipeu.Rmd",
+#                  output_file=paste0(here::here("outputs/Informe_Exploratori_Final_DM2_MANEL_"),Sys.Date()),
+#                  params = list(dir_dades=dir_dades_origen,bd.dindex='31.12.2018'))
+#----------------------------------------------------------------------------------------#
+#
+
+
 #----------------------------------------------------------------------------------------#
 library("dplyr")
 rm(list=ls())
@@ -392,19 +410,19 @@ rm(list=ls())
 dir_dades_origen="../../DADES/EPIPEU_CAT3/dades/mostra"
 #----------------------------------------------------------------------------------------# 
 rmarkdown::render(input="./codi/1_lectura_epipeu.Rmd",
-                  output_file=here::here("outputs/informe_lectura_final.html"),
+                  output_file=paste0(here::here("outputs/Informe_Lectura_Final_DM2_"),Sys.Date()),
                   params = list(dir_dades=dir_dades_origen))
 #----------------------------------------------------------------------------------------#
 rmarkdown::render(input="./codi/2_preparacio_epipeu.Rmd",
-                  output_file=here::here("outputs/informe_preparacio_final.html"),
+                  output_file=paste0(here::here("outputs/Informe_Preparacio_Final_DM2_"),Sys.Date()),
                   params = list(dir_dades=dir_dades_origen))
 #----------------------------------------------------------------------------------------#
-rmarkdown::render(input="./codi/3_analisis_epipeu.Rmd",
-                  output_file=here::here("outputs/informe_exploratori_final.html"),
+rmarkdown::render(input="./codi/3_analisis_epipeu1.Rmd",
+                  output_file=paste0(here::here("outputs/Informe_Exploratori_Final1_DM2_"),Sys.Date()),
                   params = list(dir_dades=dir_dades_origen))
 #----------------------------------------------------------------------------------------#
 rmarkdown::render(input="./codi/3_analisis_epipeu2.Rmd",
-                  output_file=here::here("outputs/informe_exploratori_final2.html"),
+                  output_file=paste0(here::here("outputs/Informe_Exploratori_Final2_DM2_"),Sys.Date()),
                   params = list(dir_dades=dir_dades_origen))
 #----------------------------------------------------------------------------------------#
 
