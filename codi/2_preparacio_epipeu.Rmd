@@ -319,6 +319,38 @@ dt_plana<-dt_plana%>%mutate(cLDL.valor_CAT=case_when(cLDL.valor        <70~ 1,
                                                      cLDL.valor        >130  ~ 3))
 
 
+
+
+# 02.03.2021!!!
+# en funcio si tenen ECV! [DG.CVD] + demà fer conductor!
+
+#---------------------------------------------------------------------------------------------------------------#
+#xi.b)**COLESTEROL LDL LDL.COLESTEROL.LDL, <70 , 70-99, 100-129 y >o=130
+#---------------------------------------------------------------------------------------------------------------
+dt_plana<-dt_plana%>%mutate(cLDL.valor_CAT2=case_when(cLDL.valor       <70~ 1,
+                                                     cLDL.valor        >=70 & cLDL.valor        <100 ~ 2,
+                                                     cLDL.valor        >=100 & cLDL.valor        <130 ~ 3,
+                                                     cLDL.valor        >=130  ~ 4))
+#---------------------------------------------------------------------------------------------------------------#
+#xi.c)**COLESTEROL LDL LDL.COLESTEROL.LDL, <70 , 70-99, 100-129 y >o=130
+#---------------------------------------------------------------------------------------------------------------
+dt_plana<-dt_plana%>%mutate(cLDL.valor_CAT3_ECV=case_when(cLDL.valor   <70                            & DG.CVD==1 ~ 1,
+                                                     cLDL.valor        >=70 & cLDL.valor        <100  & DG.CVD==1 ~ 2,
+                                                     cLDL.valor        >=100 & cLDL.valor       <130  & DG.CVD==1 ~ 3,
+                                                     cLDL.valor        >=130                          & DG.CVD==1 ~ 4))
+
+dt_plana<-dt_plana%>%mutate(cLDL.valor_CAT3_NO_ECV=case_when(cLDL.valor       <70                    & DG.CVD==0 ~ 1,
+                                                     cLDL.valor        >=70 & cLDL.valor        <100 & DG.CVD==0 ~ 2,
+                                                     cLDL.valor        >=100 & cLDL.valor       <130 & DG.CVD==0 ~ 3,
+                                                     cLDL.valor        >=130                         & DG.CVD==0 ~ 4))
+#---------------------------------------------------------------------------------------------------------------
+dt_plana<-dt_plana%>%mutate(cLDL.valor_ECV=case_when(DG.CVD==1~cLDL.valor ))
+dt_plana<-dt_plana%>%mutate(cLDL.valor_NO_ECV=case_when(DG.CVD==0~cLDL.valor ))
+#---------------------------------------------------------------------------------------------------------------
+
+
+
+
 #---------------------------------------------------------------------------------------------------------------#
 #xii)** PROTEINURIA
 #---------------------------------------------------------------------------------------------------------------#
