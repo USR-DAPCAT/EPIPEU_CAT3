@@ -1,8 +1,24 @@
 ####################
-# [02.03.2021]13:30#
+# [08.03.2021]20:35#
 ####################
 
+###################################################################################
+#Hola Ray,
+#Son mínimos cambios en el agrupador AVC, 
+#ahora no hay 2 categorías si no un solo agrupador AVC. 
+#También me piden solo 2 categorías de grado de riesgo de alcohol, 
+#he creado una etiqueta nueva, pero creo que esto lo tienes que unificar tu en R.
+###################################################################################
 
+#Hola Ray,
+
+#Adjunto la propuesta, 
+#no es definitiva ya que estoy esperando los comentarios de Didac, 
+#Josep y Magda, pero por lo menos puedes empezar montando el modelo. 
+
+#Por ejemplo la variable duración de diabetes habrá solo 2 categorías, <5 años y mas de 5 años de diabetes, 
+#etc. Este fin de tendremos las variables definitivas para modelo.
+#fer-ho avui!
 
 #Jordi Real, comenta:
 #No sé si la prevalencia de ulceras de por si ya seria de interés

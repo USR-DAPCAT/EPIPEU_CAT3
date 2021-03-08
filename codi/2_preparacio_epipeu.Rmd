@@ -81,6 +81,21 @@ dt_plana<-readRDS(here::here(params$dir_dades,"dt_plana.rds")) %>% as_tibble()
 # Una pregunta , 1.11.2020, si tenim un problema de salut i un valor d'alguna analitica o clinica, ens hem de preguntar. com volem aquest valor, nosaltres tenim, el mes proper de l'ultim any!
 ##agregar_analitiques(dt=dt_variables,bd.dindex="20181231",finestra.dies = c(-365,0))
 
+#0)
+
+dt_plana<-dt_plana%>% mutate(sexe2=case_when(sexe=="H"~1,sexe=="D"~ 0))
+
+############
+#07.03.2021#
+############
+
+dt_plana<-dt_plana%>% mutate(tabac2=case_when(tabac.valor==0~0,
+                                              tabac.valor==1~1,
+                                              tabac.valor==2~0))
+
+
+
+
 #--------------------------------------------------------------------------------------------------------------#
 #i)*EDAT
 #--------------------------------------------------------------------------------------------------------------#
@@ -113,6 +128,15 @@ dt_plana<-dt_plana%>%mutate(age4.cat=case_when(     age<30~ 1,
                                                     age>=60 & age<70 ~ 5,
                                                     age>=70 & age<80 ~ 6,
                                                age>=80~ 7 ))
+############
+#04.03.2021#
+############
+
+
+dt_plana<-dt_plana%>% mutate(age6.cat=case_when(age<75~0,age >=75~ 1))
+
+
+
 ```
 
 ```{r recodificacions2}
@@ -151,6 +175,12 @@ dt_plana<-dt_plana%>%mutate(temps_evolucio_cat3=case_when(
                                                       temps_evolucio   >=5 &   temps_evolucio   <20 ~ 2,  
                                                       temps_evolucio>=20  ~ 3))
 
+#--------------------------------------------------------------------------------------------------------------#
+#ivb)  Tiempo evoluciOn diabetes, hacer nueva categorizacion , menos de 5 anos,  y mas 5 anos de evolucion
+#--------------------------------------------------------------------------------------------------------------#
+dt_plana<-dt_plana%>%mutate(temps_evolucio_cat4=case_when(
+                                                      temps_evolucio<5   ~ 1,
+                                                      temps_evolucio>=5  ~ 2))
 
 
 #--------------------------------------------------------------------------------------------------------------#
